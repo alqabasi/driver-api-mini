@@ -1,0 +1,45 @@
+{
+  "auth": {
+    "allFieldsRequired": "يا كبير.. لازم تكمّل كل الخانات.",
+    "driverRegistered": "اتسجلت تمام يا كبير. استنى موافقة الاداره.",
+    "errorRegisteringDriver": "حصلت مشكلة وإنت بتسجل.. هنحلّها.",
+    "mobileAndPasswordRequired": "رقم الموبايل والباسورد لازم يتكتبوا يا كبير.",
+    "invalidCredentials": "البيانات مش مظبوطة ياكبير.",
+    "accountNotActivated": "حسابك لسه متفعلش.. كلم الاداره.",
+    "loginSuccess": "نورت يا كبير! دخول تمام.",
+    "errorLoggingIn": "في مشكلة في الدخول.. جرّب تاني.",
+    "authErrorUserIdNotFound": "مش لاقيين حسابك.. راجع بياناتك يا معلم."
+  },
+  "admin": {
+    "usersFetched": "جبنا كل المستخدمين يا كبير.",
+    "errorFetchingUsers": "في مشكلة وإحنا بنجيب المستخدمين.",
+    "userNotFound": "المستخدم مش موجود يا معلم.",
+    "userActivated": "اتفعّل خلاص.. تمام يا كبير!",
+    "errorActivatingUser": "في مشكلة في التفعيل.",
+    "userDeactivated": "اتلغى تفعيله.",
+    "errorDeactivatingUser": "في مشكلة في الإلغاء.",
+    "userUpdated": "اتحدّث تمام.",
+    "errorUpdatingUser": "في مشكلة في التحديث.",
+    "userDeleted": "اتمسح خلاص.",
+    "errorDeletingUser": "في مشكلة وإحنا بنمسحه."
+  },
+  "driver": {
+    "dayAlreadyOpen": "عندك يوم مفتوح يا معلم.. اقفله الأول.",
+    "dayOpened": "تمام يا كبير! فتحت يوم جديد.",
+    "errorOpeningDay": "في مشكلة وإنت بتفتح اليوم.",
+    "noOpenDayToClose": "مفيش يوم مفتوح تقفله.",
+    "dayClosed": "اليوم اتقفل.. شغل عالي يا معلم!",
+    "errorClosingDay": "في مشكلة وإنت بتقفل اليوم.",
+    "noWorkDayFound": "مفيش سجلات لليوم يا كبير.",
+    "currentDayFetched": "جبنالك يومك الحالي.",
+    "errorFetchingCurrentDay": "في مشكلة في جلب اليوم."
+  },
+  "transaction": {
+    "amountAndTypeRequired": "المبلغ والنوع لازم يتكتبوا يا معلم.",
+    "invalidTransactionType": "النوع يا إيراد يا مصروف.. بس كده.",
+    "transactionCreated": "المعاملة اتسجلت يا كبير.",
+    "errorCreatingTransaction": "في مشكلة في تسجيل المعاملة.",
+    "transactionsFetched": "جبنا معاملاتك كلها.",
+    "errorFetchingTransactions": "في مشكلة في جلب المعاملات."
+  }
+}

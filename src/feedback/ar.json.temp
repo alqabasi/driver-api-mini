@@ -1,0 +1,45 @@
+// {
+//   "auth": {
+//     "allFieldsRequired": "كل الحقول مطلوبة",
+//     "driverRegistered": "تم تسجيل السائق بنجاح. برجاء انتظار موافقة المشرف.",
+//     "errorRegisteringDriver": "حدث خطأ أثناء تسجيل السائق",
+//     "mobileAndPasswordRequired": "رقم الموبايل وكلمة المرور مطلوبان",
+//     "invalidCredentials": "البيانات غير صحيحة",
+//     "accountNotActivated": "الحساب غير مفعل. برجاء التواصل مع المشرف.",
+//     "loginSuccess": "تم تسجيل الدخول بنجاح",
+//     "errorLoggingIn": "حدث خطأ أثناء تسجيل الدخول",
+//     "authErrorUserIdNotFound": "خطأ في المصادقة: لم يتم العثور على معرف المستخدم."
+//   },
+//   "admin": {
+//     "usersFetched": "تم جلب جميع المستخدمين بنجاح",
+//     "errorFetchingUsers": "حدث خطأ أثناء جلب المستخدمين",
+//     "userNotFound": "المستخدم غير موجود",
+//     "userActivated": "تم تفعيل المستخدم بنجاح",
+//     "errorActivatingUser": "حدث خطأ أثناء تفعيل المستخدم",
+//     "userDeactivated": "تم إلغاء تفعيل المستخدم بنجاح",
+//     "errorDeactivatingUser": "حدث خطأ أثناء إلغاء تفعيل المستخدم",
+//     "userUpdated": "تم تحديث بيانات المستخدم بنجاح",
+//     "errorUpdatingUser": "حدث خطأ أثناء تحديث بيانات المستخدم",
+//     "userDeleted": "تم حذف المستخدم بنجاح",
+//     "errorDeletingUser": "حدث خطأ أثناء حذف المستخدم"
+//   },
+//   "driver": {
+//     "dayAlreadyOpen": "لديك بالفعل يوم مفتوح يجب إغلاقه أولاً.",
+//     "dayOpened": "تم فتح اليوم بنجاح",
+//     "errorOpeningDay": "خطأ في الخادم أثناء فتح اليوم.",
+//     "noOpenDayToClose": "لم يتم العثور على يوم مفتوح لإغلاقه.",
+//     "dayClosed": "تم إغلاق اليوم بنجاح",
+//     "errorClosingDay": "خطأ في الخادم أثناء إغلاق اليوم.",
+//     "noWorkDayFound": "لم يتم العثور على سجلات يوم عمل.",
+//     "currentDayFetched": "تم جلب اليوم الحالي بنجاح",
+//     "errorFetchingCurrentDay": "خطأ في الخادم أثناء جلب اليوم الحالي."
+//   },
+//   "transaction": {
+//     "amountAndTypeRequired": "المبلغ والنوع حقول مطلوبة.",
+//     "invalidTransactionType": "يجب أن يكون النوع 'إيراد' أو 'مصروف'.",
+//     "transactionCreated": "تم إنشاء المعاملة بنجاح",
+//     "errorCreatingTransaction": "خطأ في الخادم أثناء إنشاء المعاملة.",
+//     "transactionsFetched": "تم جلب المعاملات بنجاح",
+//     "errorFetchingTransactions": "خطأ في الخادم أثناء جلب المعاملات."
+//   }
+// }
