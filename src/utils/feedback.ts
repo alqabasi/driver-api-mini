@@ -4,6 +4,7 @@ import path from 'path';
 
 const loadMessages = (language: string) => {
   const filePath = path.join(__dirname, `../feedback/${language}.json`);
+  
   try {
     const data = fs.readFileSync(filePath, 'utf8');
     return JSON.parse(data);
@@ -19,11 +20,14 @@ const messages: Record<string, any> = {
 
 export const getFeedback = (key: string, lang: string = 'ar') => {
   const keys = key.split('.');
+  
   let result = messages[lang];
+  if (result === undefined) return key;
+
   for (const k of keys) {
     result = result[k];
-    if (!result) {
-      return key; // Return the key itself if not found
+    if (result === undefined) {
+      return key;
     }
   }
   return result;

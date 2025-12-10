@@ -12,7 +12,8 @@ export const register = async (req: Request, res: Response) => {
   if (!fullName || !mobilePhone || !password) {
     return res.status(400).json({ message: 'All fields are required', feedback: getFeedback('auth.allFieldsRequired') });
   }
-
+  
+  
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -32,7 +33,7 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   const { mobilePhone, password } = req.body;
-
+  
   if (!mobilePhone || !password) {
     return res.status(400).json({ message: 'Mobile phone and password are required', feedback: getFeedback('auth.mobileAndPasswordRequired') });
   }
