@@ -1,0 +1,695 @@
+openapi: 3.1.0
+info:
+  title: Trucking Management API
+  description: A comprehensive REST API to manage drivers, work sessions, financial statements, and real-time locations for a trucking business.
+  version: 1.0.0
+servers:
+  - url: /api/v1
+tags:
+  - name: Auth
+    description: Authentication endpoints
+  - name: Admin
+    description: Admin-specific endpoints
+  - name: Driver
+    description: Driver-specific endpoints
+  - name: Dev
+    description: Developer utilities
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mobile:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+  /auth/refresh:
+    post:
+      tags:
+        - Auth
+      summary: Refresh an access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Successful token refresh
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout a user
+      security:
+        - bearerAuth: []
+      responses:
+        '204':
+          description: Successful logout
+  /admin/drivers:
+    get:
+      tags:
+        - Admin
+      summary: Get all drivers
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of drivers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      tags:
+        - Admin
+      summary: Create a new driver
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: The created driver
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /admin/drivers/{id}:
+    get:
+      tags:
+        - Admin
+      summary: Get a driver by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The driver
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    put:
+      tags:
+        - Admin
+      summary: Update a driver
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: The updated driver
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    delete:
+      tags:
+        - Admin
+      summary: Delete a driver
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The driver was deleted
+  /admin/drivers/{id}/charges:
+    post:
+      tags:
+        - Admin
+      summary: Add a charge to a driver
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCharge'
+      responses:
+        '201':
+          description: The created charge
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCharge'
+  /admin/drivers/{id}/location/live:
+    get:
+      tags:
+        - Admin
+      summary: Get a driver's live location
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The driver's live location
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+  /admin/drivers/{id}/location/history:
+    get:
+      tags:
+        - Admin
+      summary: Get a driver's location history
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: A list of locations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Location'
+  /admin/drivers/{id}/reports/day/{dayId}:
+    get:
+      tags:
+        - Admin
+      summary: Get a driver's report for a specific day
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: dayId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The driver's report for the day
+  /admin/drivers/{id}/reports:
+    get:
+      tags:
+        - Admin
+      summary: Get a driver's report for a date range
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: The driver's report for the date range
+  /driver/day:
+    get:
+      tags:
+        - Driver
+      summary: Get the current day for a driver
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The current day
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverDay'
+  /driver/day/open:
+    post:
+      tags:
+        - Driver
+      summary: Open the current day for a driver
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: The opened day
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverDay'
+  /driver/day/close:
+    post:
+      tags:
+        - Driver
+      summary: Close the current day for a driver
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: The closed day
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverDay'
+  /driver/statements:
+    get:
+      tags:
+        - Driver
+      summary: Get all statements for a driver
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of statements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Statement'
+    post:
+      tags:
+        - Driver
+      summary: Create a new statement
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Statement'
+      responses:
+        '201':
+          description: The created statement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statement'
+  /driver/statements/{id}:
+    get:
+      tags:
+        - Driver
+      summary: Get a statement by ID
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The statement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statement'
+    put:
+      tags:
+        - Driver
+      summary: Update a statement
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Statement'
+      responses:
+        '200':
+          description: The updated statement
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statement'
+    delete:
+      tags:
+        - Driver
+      summary: Delete a statement
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: The statement was deleted
+  /driver/charges/{id}/accept:
+    post:
+      tags:
+        - Driver
+      summary: Accept a charge
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The accepted charge
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCharge'
+  /driver/charges/{id}/deny:
+    post:
+      tags:
+        - Driver
+      summary: Deny a charge
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: The denied charge
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCharge'
+  /driver/location:
+    post:
+      tags:
+        - Driver
+      summary: Update a driver's location
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Location'
+      responses:
+        '204':
+          description: The location was updated
+  /dev/postman:
+    get:
+      tags:
+        - Dev
+      summary: Get the Postman collection
+      responses:
+        '200':
+          description: The Postman collection
+  /health:
+    get:
+      tags:
+        - Dev
+      summary: Get the health of the API
+      responses:
+        '200':
+          description: The API is healthy
+  /version:
+    get:
+      tags:
+        - Dev
+      summary: Get the version of the API
+      responses:
+        '200':
+          description: The API version
+  /metrics:
+    get:
+      tags:
+        - Dev
+      summary: Get the metrics of the API
+      responses:
+        '200':
+          description: The API metrics
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        fullName:
+          type: string
+        shortName:
+          type: string
+        mobile:
+          type: string
+        role:
+          type: string
+          enum: [admin, viewer, driver]
+        active:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+    DriverDay:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        driverId:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [open, closed]
+        openedAt:
+          type: string
+          format: date-time
+        closedAt:
+          type: string
+          format: date-time
+    Statement:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        dayId:
+          type: string
+          format: uuid
+        driverId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [income, expense]
+        clientName:
+          type: string
+        amount:
+          type: number
+          format: float
+        details:
+          type: string
+        mediaUrl:
+          type: string
+          format: uri
+        voiceUrl:
+          type: string
+          format: uri
+        createdAt:
+          type: string
+          format: date-time
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+    AdminCharge:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        driverId:
+          type: string
+          format: uuid
+        amount:
+          type: number
+          format: float
+        status:
+          type: string
+          enum: [pending, accepted, denied]
+        createdAt:
+          type: string
+          format: date-time
+        acceptedAt:
+          type: string
+          format: date-time
+          nullable: true
+    Location:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        driverId:
+          type: string
+          format: uuid
+        lat:
+          type: number
+          format: float
+        lng:
+          type: number
+          format: float
+        timestamp:
+          type: string
+          format: date-time
+    AuditLog:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        actionType:
+          type: string
+        entityType:
+          type: string
+        entityId:
+          type: string
+          format: uuid
+        payloadJson:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+    RefreshToken:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        userId:
+          type: string
+          format: uuid
+        token:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+        createdAt:
+          type: string
+          format: date-time
+        revoked:
+          type: boolean
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

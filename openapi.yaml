@@ -1,0 +1,283 @@
+openapi: 3.1.0
+info:
+  title: Trucking Management API
+  description: A comprehensive REST API to manage drivers, work sessions, financial statements, and real-time locations for a trucking business.
+  version: 1.0.0
+servers:
+  - url: /api/v1
+tags:
+  - name: Auth
+    description: Authentication endpoints
+  - name: Admin
+    description: Admin-specific endpoints for user management
+  - name: Driver
+    description: Endpoints for driver-specific actions
+  - name: Transactions
+    description: Endpoints for managing financial transactions
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: Register a new driver
+      description: Allows a new user to register as a driver. The account will be inactive until an admin approves it.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                mobilePhone:
+                  type: string
+                password:
+                  type: string
+                license_number:
+                  type: string
+      responses:
+        '201':
+          description: Driver registered successfully
+        '400':
+          description: All fields are required
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login for all user types
+      description: Authenticates a user (admin or driver) and returns a JWT token if credentials are valid and the account is active.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mobilePhone:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful, returns JWT token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '401':
+          description: Invalid credentials
+        '403':
+          description: Account not activated
+  /admin/users:
+    get:
+      tags:
+        - Admin
+      summary: Get all users
+      description: Retrieves a list of all users, both active and inactive. For admin use only.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of users.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+  /admin/users/{id}/activate:
+    patch:
+      tags:
+        - Admin
+      summary: Activate a user account
+      description: Activates a user's account, allowing them to log in. For admin use only.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User activated successfully.
+        '404':
+          description: User not found.
+  /driver/day/open:
+    post:
+      tags:
+        - Driver
+      summary: Open a new workday
+      description: Allows a driver to start a new workday session.
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: Day opened successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverDay'
+        '400':
+          description: Day already opened.
+  /driver/day/close:
+    post:
+      tags:
+        - Driver
+      summary: Close the current workday
+      description: Allows a driver to end their current workday session.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Day closed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverDay'
+        '404':
+          description: No open day found to close.
+  /driver/day/current:
+    get:
+      tags:
+        - Driver
+      summary: Get current workday status
+      description: Retrieves the most recent workday record for the authenticated driver.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current day details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriverDay'
+        '404':
+          description: No work day records found.
+  /transactions:
+    post:
+      tags:
+        - Transactions
+      summary: Create a new transaction
+      description: Allows a driver to log a new financial transaction (income or expense).
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - amount
+                - type
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  description: The monetary value of the transaction.
+                type:
+                  type: string
+                  enum: [income, expense]
+                  description: The type of transaction.
+                description:
+                  type: string
+                  description: A brief description of the transaction.
+                category:
+                  type: string
+                  description: A category for the transaction (e.g., fuel, food, maintenance).
+                payment_method:
+                  type: string
+                  description: The method of payment (e.g., cash, credit card).
+      responses:
+        '201':
+          description: Transaction created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Transaction'
+        '400':
+          description: Bad request, missing required fields or invalid type.
+    get:
+      tags:
+        - Transactions
+      summary: Get all transactions for a driver
+      description: Retrieves a list of all financial transactions for the authenticated driver.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of transactions.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Transaction'
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        fullName:
+          type: string
+        mobilePhone:
+          type: string
+        role:
+          type: string
+          enum: [admin, driver]
+        isActive:
+          type: boolean
+    DriverDay:
+      type: object
+      properties:
+        id:
+          type: integer
+        driver_id:
+          type: integer
+        date:
+          type: string
+          format: date
+        status:
+          type: string
+          enum: [open, closed]
+        opened_at:
+          type: string
+          format: date-time
+        closed_at:
+          type: string
+          format: date-time
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        driver_id:
+          type: integer
+        amount:
+          type: number
+          format: float
+        type:
+          type: string
+          enum: [income, expense]
+        description:
+          type: string
+        category:
+          type: string
+        payment_method:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
