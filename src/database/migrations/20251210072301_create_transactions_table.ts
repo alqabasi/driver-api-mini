@@ -7,8 +7,6 @@ export async function up(knex: Knex): Promise<void> {
     table.decimal('amount', 10, 2).notNullable();
     table.string('type').notNullable(); // 'income' or 'expense'
     table.string('description');
-    table.string('category');
-    table.string('payment_method');
     table.timestamp('timestamp').defaultTo(knex.fn.now());
   });
 }

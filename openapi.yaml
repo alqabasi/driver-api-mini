@@ -34,8 +34,6 @@ paths:
                   type: string
                 password:
                   type: string
-                license_number:
-                  type: string
       responses:
         '201':
           description: Driver registered successfully
@@ -89,6 +87,55 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+  /admin/users/{id}:
+    put:
+      tags:
+        - Admin
+      summary: Update a user account
+      description: Updates a user's account details. For admin use only.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fullName:
+                  type: string
+                mobilePhone:
+                  type: string
+      responses:
+        '200':
+          description: User updated successfully.
+        '404':
+          description: User not found.
+    delete:
+      tags:
+        - Admin
+      summary: Delete a user account
+      description: Deletes a user's account. This is a soft delete. For admin use only.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User deleted successfully.
+        '404':
+          description: User not found.
+
   /admin/users/{id}/activate:
     patch:
       tags:
@@ -108,6 +155,26 @@ paths:
           description: User activated successfully.
         '404':
           description: User not found.
+  /admin/users/{id}/deactivate:
+    patch:
+      tags:
+        - Admin
+      summary: Deactivate a user account
+      description: Deactivates a user's account, preventing them from logging in. For admin use only.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User deactivated successfully.
+        '404':
+          description: User not found.
+
   /driver/day/open:
     post:
       tags:
@@ -188,12 +255,6 @@ paths:
                 description:
                   type: string
                   description: A brief description of the transaction.
-                category:
-                  type: string
-                  description: A category for the transaction (e.g., fuel, food, maintenance).
-                payment_method:
-                  type: string
-                  description: The method of payment (e.g., cash, credit card).
       responses:
         '201':
           description: Transaction created successfully.
@@ -268,10 +329,6 @@ components:
           type: string
           enum: [income, expense]
         description:
-          type: string
-        category:
-          type: string
-        payment_method:
           type: string
         timestamp:
           type: string

@@ -15,6 +15,11 @@ const config: { [key: string]: Knex.Config } = {
     seeds: {
       directory: path.resolve(__dirname, "src", "database", "seeds"),
     },
+    pool: {
+      afterCreate: (conn: any, done: any) => {
+        conn.run("PRAGMA foreign_keys = ON", done);
+      },
+    },
   },
 };
 

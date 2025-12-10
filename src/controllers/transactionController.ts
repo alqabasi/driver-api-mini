@@ -41,7 +41,7 @@ export const getTransactions = async (req: AuthenticatedRequest, res: Response) 
   }
 
   try {
-
+    
     const transactions = await knex('transactions')
       .where({ user_id })
       .orderBy('timestamp', 'desc');

@@ -16,8 +16,9 @@ const app = express();
 
 app.use(express.json());
 
-
+// use this for dev only
 app.use(cors())
+
 
 // Load the OpenAPI specification
 const openApiPath = path.resolve(process.cwd(), 'openapi.yaml');
