@@ -11,10 +11,14 @@ import authRoutes from './routes/auth.routes';
 import adminRoutes from './routes/admin.routes';
 import driverRoutes from './routes/driverRoutes';
 import transactionRoutes from './routes/transaction.routes';
+import { apiLimiter } from './middleware/rate-limiter.middleware';
 
 const app = express();
 
 app.use(express.json());
+
+// Apply the rate limiting middleware to all requests
+app.use(apiLimiter);
 
 // use this for dev only
 app.use(cors())
