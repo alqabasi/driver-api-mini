@@ -3,7 +3,8 @@ import fs from 'fs';
 import path from 'path';
 
 const loadMessages = (language: string) => {
-  const filePath = path.join(__dirname, `../feedback/${language}.json`);
+  // const filePath = path.join(__dirname, `../feedback/${language}.json`);
+  const filePath = path.join(process.cwd(), 'src/feedback', `${language}.json`); // for relative path production
   
   try {
     const data = fs.readFileSync(filePath, 'utf8');
