@@ -6,9 +6,9 @@ import knex from '../database/connection';
 const JWT_SECRET = process.env.JWT_SECRET || 'your_default_jwt_secret';
 
 export const register = async (req: Request, res: Response) => {
-  const { fullName, mobilePhone, password, license_number } = req.body;
+  const { fullName, mobilePhone, password } = req.body;
 
-  if (!fullName || !mobilePhone || !password || !license_number) {
+  if (!fullName || !mobilePhone || !password) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
@@ -21,7 +21,6 @@ export const register = async (req: Request, res: Response) => {
       password: hashedPassword,
       role: 'driver', // Drivers register themselves, so the role is 'driver'
       isActive: false, // Accounts are inactive until an admin approves them
-      license_number,
     });
 
     res.status(201).json({ message: 'Driver registered successfully. Please wait for admin approval.', userId });
@@ -55,8 +54,9 @@ export const login = async (req: Request, res: Response) => {
     }
 
     const token = jwt.sign({ id: user.id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
+    const role = user.role;
 
-    res.status(200).json({ token });
+    res.status(200).json({ token, role });
   } catch (error) {
     res.status(500).json({ message: 'Error logging in', error });
   }

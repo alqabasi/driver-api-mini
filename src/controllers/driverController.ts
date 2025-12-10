@@ -23,7 +23,7 @@ export const openDay = async (req: AuthenticatedRequest, res: Response) => {
       driver_id,
       date: today,
       status: 'open',
-      opened_at: new Date()
+      opened_at: new Date().toISOString()
     }).returning('*');
 
     res.status(201).json(newDay);
@@ -53,7 +53,7 @@ export const closeDay = async (req: AuthenticatedRequest, res: Response) => {
       .where({ id: day.id })
       .update({
         status: 'closed',
-        closed_at: new Date(),
+        closed_at: new Date().toISOString(),
       })
       .returning('*');
 
