@@ -1,0 +1,26 @@
+- add a new route: /report/  here, to generate reports:
+    rules:
+        - admin, and viewer roles can generate report for any driver.
+        - driver can oly generate report for him self only, and can't generate for another drivers
+
+    report-types or formates:
+        - xlsx
+        - pdf
+        - json
+    
+    
+    update
+
+
+    report features: driver want a specific data to be included into this report
+        - 
+
+    usage case:
+        - driver want a pdf full detailed pdf report for all his working days.
+        - driver want an xlsx report for a specific day.
+        - driver want a pdf report for all income at a specific day.
+        - ...
+
+
+
+    
