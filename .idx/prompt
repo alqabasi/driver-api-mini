@@ -1,0 +1,390 @@
+You are an expert backend engineer specializing in Node.js, Express, SQLite, REST API architecture, authentication, RBAC, OpenAPI, TypeScript, scalable backend patterns, and software design.
+
+Your job is to implement a complete backend system following the specifications below.
+All outputs must be highly structured, clean, production-ready, and follow best practices.
+
+📌 1. PROJECT GOAL
+
+Build a complete, secure, scalable, versioned REST API for a system that manages:
+
+Drivers
+
+Daily work sessions
+
+Financial statements
+
+Admin charges
+
+Real-time driver locations
+
+Reporting
+
+Audit logs
+
+Roles (admin, viewer, driver)
+
+Permission system
+
+Authentication via mobile + password
+
+WebSockets
+
+Developer utilities
+
+Documentation
+
+Postman collection
+
+Swagger UI
+
+The API must be fully documented in OpenAPI 3.1 YAML, versioned at /api/v1.
+
+📌 2. TECH STACK REQUIREMENTS
+
+Node.js + Express (TypeScript preferred)
+
+SQLite (with migrations + schema)
+
+JWT Authentication
+
+Refresh Tokens
+
+RBAC middleware
+
+WebSocket for realtime location streaming
+
+Multer or similar for file uploads
+
+OpenAPI 3.1 for specification
+
+Swagger UI at /api/docs
+
+Postman collection export at /api/v1/dev/postman
+
+📌 3. ROUTE PREFIXES / VERSIONING
+
+All production routes must follow:
+
+/api/v1/*
+
+
+Developer utilities:
+
+/api/v1/dev/*
+
+
+Documentation:
+
+/api/docs
+
+📌 4. USER ROLES & PERMISSIONS
+Roles:
+
+admin → full system access
+
+viewer → read-only access to driver info
+
+driver → manages own day, statements, accepts charges
+
+Enhancements:
+
+Implement fine-grained permissions table:
+
+permissions:
+  - can_manage_users
+  - can_view_all
+  - can_track_locations
+  - can_create_charges
+  - can_view_finance
+  - can_edit_statements
+  ... (extendable)
+
+
+Admin automatically has all permissions.
+
+📌 5. AUTHENTICATION SYSTEM
+Core requirements:
+
+Login using mobile number + password
+
+JWT access token (15–30 min expiry)
+
+JWT refresh token (rotation supported)
+
+Refresh endpoint
+
+Logout endpoint
+
+Rate limiting on login
+
+Endpoints:
+POST /api/v1/auth/login
+POST /api/v1/auth/refresh
+POST /api/v1/auth/logout
+
+📌 6. DATABASE SCHEMA (SQLite)
+
+Include migrations for:
+
+Users
+id, fullName, shortName, mobile*, password_hash,
+role, active, created_at
+
+DriverDays
+id, driver_id, date, status (open|closed),
+opened_at, closed_at
+
+Statements
+id, day_id, driver_id,
+type (income|expense),
+client_name, amount, details,
+media_url, voice_url,
+created_at, deleted_at
+
+AdminCharges
+id, driver_id, amount,
+status (pending|accepted|denied),
+created_at, accepted_at
+
+Locations
+id, driver_id, lat, lng, timestamp
+
+AuditLogs
+id, user_id, action_type, entity_type,
+entity_id, payload_json, created_at
+
+RefreshTokens
+id, user_id, token, expires_at, created_at, revoked
+
+📌 7. DAY WORKFLOW REQUIREMENTS
+
+Drivers can:
+
+Open the current day
+
+Close the current day
+
+Cannot modify statements if day is closed
+
+Auto-close previous day if left open yesterday
+
+Admin can view any day & all statements.
+
+📌 8. STATEMENT WORKFLOW
+
+Each statement:
+
+Has income or expense
+
+Tracks amount, client, details, media, voice note
+
+Cannot edit/delete if day is closed
+
+Cannot perform expense exceeding balance
+
+Supports file upload (media + voice note)
+
+Admin charge acceptance creates:
+
+Income statement automatically
+
+Enhancements:
+
+Soft delete (deleted_at)
+
+Pagination, filtering, sorting
+
+Standard error schema
+
+📌 9. ADMIN CHARGES
+
+Admin can add a charge → pending
+Driver must accept or reject
+If accepted:
+
+Balance increases
+
+Auto-create income statement
+
+Endpoints include:
+
+POST /admin/drivers/{id}/charges
+POST /driver/charges/{id}/accept
+POST /driver/charges/{id}/deny
+
+📌 10. BALANCE RULES
+
+Balance =
+accepted admin charges + income statements – expense statements
+
+Return:
+
+Real balance
+
+Pending charges
+
+Day balance summaries
+
+📌 11. REAL-TIME LOCATION TRACKING
+
+Drivers send location periodically.
+
+Endpoints:
+POST /driver/location
+GET /admin/drivers/{id}/location/live
+GET /admin/drivers/{id}/location/history
+
+
+Enhancements:
+
+WebSocket /ws/location
+
+Last seen timestamp
+
+Online/offline status
+
+📌 12. REPORTING
+
+Admin can generate reports:
+
+By day:
+GET /admin/drivers/{id}/reports/day/{dayId}
+
+By date range:
+GET /admin/drivers/{id}/reports?from=X&to=Y
+
+
+Export:
+
+PDF
+
+Excel
+
+Enhance with:
+
+Totals
+
+Summaries
+
+Detailed statements
+
+Location path for the day
+
+📌 13. DEVELOPER UTILITIES
+/api/v1/dev/postman → returns JSON collection
+/api/docs → swagger UI
+/api/v1/health → system status
+/api/v1/version → API version
+/api/v1/metrics → Prometheus metrics
+
+📌 14. ENHANCEMENTS TO INCLUDE
+(MANDATORY)
+
+Refresh token flow
+
+Pagination + sorting + filtering
+
+Soft delete
+
+Audit logs
+
+Rate limiting
+
+Standardized error schema
+
+Better permissions model
+
+WebSocket for real-time location
+
+Batch operations (bulk enable/disable, bulk charges)
+
+File upload validation
+
+System info endpoints
+
+Improved versioning for future /api/v2
+
+📌 15. REQUIRED OUTPUTS FROM THE AI AGENT
+
+The AI agent must generate:
+
+✔ 1. Full OpenAPI 3.1 YAML
+
+All routes, schemas, examples, responses, security, tags.
+
+✔ 2. Full project folder structure
+src/
+  controllers/
+  routes/
+  middlewares/
+  services/
+  models/
+  migrations/
+  utils/
+  config/
+  sockets/
+
+✔ 3. Database migrations + schema (SQLite)
+✔ 4. JWT + Refresh Token implementation
+✔ 5. RBAC Middleware
+
+Role-based + permission-based.
+
+✔ 6. Controllers and Services
+
+Full CRUD + workflow logic.
+
+✔ 7. WebSocket server
+
+With rooms, events, and auth.
+
+✔ 8. Error handling system
+
+Global error middleware.
+
+✔ 9. Validation
+
+Yup, Joi, Zod, or custom.
+
+✔ 10. Postman Collection JSON
+
+Auto-generated from OpenAPI.
+
+✔ 11. Swagger UI server route
+
+Served at /api/docs.
+
+✔ 12. Rate limiting middleware
+✔ 13. Developer documentation
+
+Setup guide, usage examples.
+
+✔ 14. Production-ready entrypoint
+
+index.ts or server.js
+
+📌 16. CODING STANDARDS
+
+Write clean, modular, layered code
+
+Use async/await everywhere
+
+Do not hardcode secrets
+
+Use environment variables
+
+Handle edge cases carefully
+
+Provide comments & JSDoc
+
+Ensure database safety (transactions where needed)
+
+Reusable middleware
+
+DRY, SOLID compliant
+
+📌 17. FINAL INSTRUCTION TO THE AI
+
+Using all the requirements above, generate the complete backend system.
+Start by producing the full OpenAPI 3.1 YAML, then generate folder structure, database schema, controllers, services, middleware, utilities, WebSocket implementation, developer tools, and documentation.
+Everything must integrate cleanly, be fully consistent, and production-ready.
