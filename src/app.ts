@@ -11,8 +11,11 @@ import authRoutes from './routes/auth.routes';
 import adminRoutes from './routes/admin.routes';
 import driverRoutes from './routes/driverRoutes';
 import transactionRoutes from './routes/transaction.routes';
+import { rateLimiter } from './middleware/rate-limiter.middleware';
 
 const app = express();
+
+app.use(rateLimiter);
 
 app.use(express.json());
 
@@ -23,7 +26,6 @@ app.use(cors())
 // Load the OpenAPI specification
 const openApiPath = path.resolve(process.cwd(), 'openapi.yaml');
 const fileContents = fs.readFileSync(openApiPath, 'utf8');
-// const swaggerDocument = yaml.load(fileContents);
 const swaggerDocument = yaml.load(fileContents) as OpenAPIV3.Document;
 
 // Serve Swagger UI
