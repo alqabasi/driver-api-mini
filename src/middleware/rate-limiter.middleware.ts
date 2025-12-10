@@ -1,7 +1,7 @@
 import rateLimit from 'express-rate-limit';
 
 const WINDOW: number = 1; // minutes
-const MAX_REQUESTS: number = 5;
+const MAX_REQUESTS: number = 100;
 
 
 export const rateLimiter = rateLimit({
